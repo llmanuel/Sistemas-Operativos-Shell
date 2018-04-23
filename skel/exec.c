@@ -62,13 +62,8 @@ void exec_cmd(struct cmd* cmd) {
 		case EXEC: {
 			// spawns a command
 			struct execcmd* c = (struct execcmd*)cmd;
-			// int i = 0;
-			 // c->argv[0] = "bin/ls";
-		// 	for (i = 0; i<= c->argc; i++) {
-		// 	fprintf(stdout, "%s \n", c->argv[i]);
-		// }
-
 			execvp(c->argv[0], c->argv);
+      
 			printf("The command '%s' doesn't exist %s\n", c->argv[0], strerror(errno));
 			_exit(0);
 			break;

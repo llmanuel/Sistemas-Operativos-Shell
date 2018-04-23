@@ -1,7 +1,7 @@
 #include "parsing.h"
 
 // parses an argument of the command stream input
-static char* get_token(char* buf, int idx) {
+char* get_token(char* buf, int idx) {
 
 	char* tok;
 	int i;
@@ -97,7 +97,15 @@ static char* expand_environ_var(char* arg) {
 
 	if (arg[0] == '$') {
 		char *tmp = getenv(&arg[1]);
-		strcpy(arg, tmp);
+		if (tmp == NULL) {
+			*arg = ' ';
+		} else {
+			size_t len = strlen(tmp);
+			if (len > ARGSIZE)
+				arg = realloc(arg, (len + 1) * sizeof(char));
+
+			strcpy(arg, tmp);
+		}
 	}
 
 	return arg;
