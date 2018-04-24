@@ -2,7 +2,7 @@
 
 // sets the "key" argument with the key part of
 // the "arg" argument and null-terminates it
-static void get_environ_key(char* arg, char* key) {
+void get_environ_key(char* arg, char* key) {
 
 	int i;
 	for (i = 0; arg[i] != '='; i++)
@@ -13,7 +13,7 @@ static void get_environ_key(char* arg, char* key) {
 
 // sets the "value" argument with the value part of
 // the "arg" argument and null-terminates it
-static void get_environ_value(char* arg, char* value, int idx) {
+void get_environ_value(char* arg, char* value, int idx) {
 
 	int i, j;
 	for (i = (idx + 1), j = 0; i < strlen(arg); i++, j++)
@@ -30,8 +30,20 @@ static void get_environ_value(char* arg, char* value, int idx) {
 // 	get the index where the '=' is
 // - 'get_environ_*()' can be useful here
 static void set_environ_vars(char** eargv, int eargc) {
+	int i;
+	for (i = 0; i < eargc; i++) {
+		char* key, *value;
+		// printf("hola llegue\n");
+		// printf("eargv: %s\n", eargv);
+		// printf("*eargv: %s\n", *(eargv+i));
+		get_environ_key(*(eargv+i), key);
+		// printf("key: %s\n", key);
+		get_environ_value(*(eargv+i), value, strlen(key));
+		// printf("value: %s\n", value);
+		if (setenv((const char *)key, (const char *)value, 1) != 0)
+			perror("Error:");
+	}
 
-	// Your code here
 }
 
 // opens the file in which the stdin/stdout or
@@ -57,13 +69,17 @@ static int open_redir_fd(char* file) {
 // 	in types.h
 void exec_cmd(struct cmd* cmd) {
 
+	struct execcmd* c = (struct execcmd*)cmd;
+	if (c->eargc > 0) {
+		set_environ_vars(c->eargv, c->eargc);
+	}
+
 	switch (cmd->type) {
 
 		case EXEC: {
 			// spawns a command
-			struct execcmd* c = (struct execcmd*)cmd;
 			execvp(c->argv[0], c->argv);
-			
+
 			printf("The command '%s' doesn't exist %s\n", c->argv[0], strerror(errno));
 			_exit(0);
 			break;
