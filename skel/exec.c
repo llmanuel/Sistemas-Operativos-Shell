@@ -2,7 +2,7 @@
 
 // sets the "key" argument with the key part of
 // the "arg" argument and null-terminates it
-void get_environ_key(char* arg, char* key) {
+static void get_environ_key(char* arg, char* key) {
 
 	int i;
 	for (i = 0; arg[i] != '='; i++)
@@ -13,7 +13,7 @@ void get_environ_key(char* arg, char* key) {
 
 // sets the "value" argument with the value part of
 // the "arg" argument and null-terminates it
-void get_environ_value(char* arg, char* value, int idx) {
+static void get_environ_value(char* arg, char* value, int idx) {
 
 	int i, j;
 	for (i = (idx + 1), j = 0; i < strlen(arg); i++, j++)
@@ -33,13 +33,9 @@ static void set_environ_vars(char** eargv, int eargc) {
 	int i;
 	for (i = 0; i < eargc; i++) {
 		char* key, *value;
-		// printf("hola llegue\n");
-		// printf("eargv: %s\n", eargv);
-		// printf("*eargv: %s\n", *(eargv+i));
 		get_environ_key(*(eargv+i), key);
-		// printf("key: %s\n", key);
 		get_environ_value(*(eargv+i), value, strlen(key));
-		// printf("value: %s\n", value);
+
 		if (setenv((const char *)key, (const char *)value, 1) != 0)
 			perror("Error:");
 	}

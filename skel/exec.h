@@ -8,8 +8,6 @@
 
 extern struct cmd* parsed_pipe;
 
-void get_environ_key(char* arg, char* key);
-void get_environ_value(char* arg, char* value, int idx);
 void exec_cmd(struct cmd* c);
 
 #endif // EXEC_H
