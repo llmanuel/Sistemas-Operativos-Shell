@@ -2,6 +2,7 @@
 #define BUILTIN_H
 
 #include "defs.h"
+#include "parsing.h"
 
 extern char promt[PRMTLEN];
 

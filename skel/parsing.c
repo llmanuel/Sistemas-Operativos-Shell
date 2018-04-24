@@ -137,8 +137,8 @@ static struct cmd* parse_exec(char* buf_cmd) {
 		if (parse_environ_var(c, tok))
 			continue;
 
-    tok = expand_environ_var(tok);
-
+		tok = expand_environ_var(tok);
+		
 		c->argv[argc++] = tok;
 	}
 

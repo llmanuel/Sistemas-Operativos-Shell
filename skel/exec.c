@@ -63,7 +63,7 @@ void exec_cmd(struct cmd* cmd) {
 			// spawns a command
 			struct execcmd* c = (struct execcmd*)cmd;
 			execvp(c->argv[0], c->argv);
-      
+			
 			printf("The command '%s' doesn't exist %s\n", c->argv[0], strerror(errno));
 			_exit(0);
 			break;
