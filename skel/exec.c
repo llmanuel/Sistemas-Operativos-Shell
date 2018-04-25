@@ -39,7 +39,7 @@ static void set_environ_vars(char** eargv, int eargc) {
 		char key[ARGSIZE] = {0}, value[ARGSIZE] = {0};
 		get_environ_key(*(eargv+i), key);
 		get_environ_value(*(eargv+i), value, strlen(key));
-		
+
 		if (setenv((const char *)key, (const char *)value, 1) != 0) {
 			perror("Error:");
 		}
@@ -87,10 +87,9 @@ void exec_cmd(struct cmd* cmd) {
 		}
 		case BACK: {
 			// runs a command in background
-			//
-			// Your code here
-			printf("Background process are not yet implemented\n");
-			_exit(-1);
+			cmd->type = EXEC;
+			exec_cmd(cmd);
+			_exit(0);
 			break;
 		}
 
