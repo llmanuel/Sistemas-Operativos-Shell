@@ -5,7 +5,7 @@ struct cmd* parsed_pipe;
 
 // runs the command in 'cmd'
 int run_cmd(char* cmd) {
-	
+
 	pid_t p;
 	struct cmd *parsed;
 
@@ -28,10 +28,10 @@ int run_cmd(char* cmd) {
 
 	// parses the command line
 	parsed = parse_line(cmd);
-	
+
 	// forks and run the command
 	if ((p = fork()) == 0) {
-		
+
 		// keep a reference
 		// to the parsed pipe cmd
 		// so it can be freed later
@@ -46,20 +46,19 @@ int run_cmd(char* cmd) {
 
 	// background process special treatment
 	// Hint:
-	// - check if the process is 
+	// - check if the process is
 	// 	going to be run in the 'back'
-	// - print info about it with 
+	// - print info about it with
 	// 	'print_back_info()'
 	//
 	// Your code here
 
 	// waits for the process to finish
 	waitpid(p, &status, 0);
-	
+
 	print_status_info(parsed);
-	
+
 	free_command(parsed);
 
 	return 0;
 }
-

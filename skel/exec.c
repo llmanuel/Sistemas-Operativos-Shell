@@ -5,10 +5,12 @@
 static void get_environ_key(char* arg, char* key) {
 
 	int i;
+	char tmp[ARGSIZE] = {0};
 	for (i = 0; arg[i] != '='; i++)
-		key[i] = arg[i];
+		tmp[i] = arg[i];
 
-	key[i] = END_STRING;
+	tmp[i] = END_STRING;
+	strcpy(key,tmp);
 }
 
 // sets the "value" argument with the value part of
@@ -16,10 +18,12 @@ static void get_environ_key(char* arg, char* key) {
 static void get_environ_value(char* arg, char* value, int idx) {
 
 	int i, j;
+	char tmp[ARGSIZE] = {0};
 	for (i = (idx + 1), j = 0; i < strlen(arg); i++, j++)
-		value[j] = arg[i];
+		tmp[j] = arg[i];
 
-	value[j] = END_STRING;
+	tmp[j] = END_STRING;
+	strcpy(value,tmp);
 }
 
 // sets the environment variables passed
@@ -32,12 +36,13 @@ static void get_environ_value(char* arg, char* value, int idx) {
 static void set_environ_vars(char** eargv, int eargc) {
 	int i;
 	for (i = 0; i < eargc; i++) {
-		char* key, *value;
+		char key[ARGSIZE] = {0}, value[ARGSIZE] = {0};
 		get_environ_key(*(eargv+i), key);
 		get_environ_value(*(eargv+i), value, strlen(key));
-
-		if (setenv((const char *)key, (const char *)value, 1) != 0)
+		
+		if (setenv((const char *)key, (const char *)value, 1) != 0) {
 			perror("Error:");
+		}
 	}
 
 }
