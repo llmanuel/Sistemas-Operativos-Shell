@@ -87,8 +87,7 @@ void exec_cmd(struct cmd* cmd) {
 		}
 		case BACK: {
 			// runs a command in background
-			cmd->type = EXEC;
-			exec_cmd(cmd);
+			exec_cmd(cmd->c);
 			_exit(0);
 			break;
 		}
