@@ -59,8 +59,7 @@ static void set_environ_vars(char** eargv, int eargc) {
 // 	to make it a readable normal file
 static int open_redir_fd(char* file) {
 
-	// Your code here
-	return -1;
+	return open(file, O_CREAT | O_APPEND | O_WRONLY, 0664);
 }
 
 // executes a command - does not return
@@ -87,16 +86,38 @@ void exec_cmd(struct cmd* cmd) {
 		}
 		case BACK: {
 			// runs a command in background
-			exec_cmd(cmd->c);
+			struct backcmd* cmd_b = (struct backcmd*)cmd;
+			exec_cmd(cmd_b->c);
 			_exit(0);
 			break;
 		}
 
 		case REDIR: {
 			// changes the input/output/stderr flow
-			//
-			// Your code here
-			printf("Redirections are not yet implemented\n");
+
+			int fd = -1;
+			int new_fd = -1;
+			if (strlen(c->out_file) > 0) {
+				fd = open_redir_fd(c->out_file);
+				new_fd = dup2(fd, 1);
+				close(fd);
+			}
+			if (strlen(c->in_file) > 0) {
+				fd = open(c->in_file, O_RDWR);
+				new_fd = dup2(fd, 0);
+				close(fd);
+			}
+			if (strlen(c->err_file) > 0) {
+				fd = open_redir_fd(c->err_file);
+				new_fd = dup2(fd, 2);
+				close(fd);
+			}
+
+			if (new_fd == -1)
+				perror("Error:");
+
+			c->type = EXEC;
+			exec_cmd((struct cmd*)c);
 			_exit(-1);
 			break;
 		}
