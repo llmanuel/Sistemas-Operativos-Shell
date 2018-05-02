@@ -6,6 +6,11 @@
 #include "utils.h"
 #include "freecmd.h"
 
+#define READ_END 0
+#define WRITE_END 1
+#define STDIN_FILENO 0
+#define STDOUT_FILENO 1
+
 extern struct cmd* parsed_pipe;
 
 void exec_cmd(struct cmd* c);
