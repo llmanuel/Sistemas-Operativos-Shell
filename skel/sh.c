@@ -27,7 +27,7 @@ static void init_shell() {
 		perror(buf);
 	} else {
 		snprintf(promt, sizeof promt, "(%s)", home);
-	}	
+	}
 }
 
 int main(void) {
@@ -38,4 +38,3 @@ int main(void) {
 
 	return 0;
 }
-

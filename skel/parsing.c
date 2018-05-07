@@ -82,6 +82,7 @@ static bool parse_environ_var(struct execcmd* c, char* arg) {
 	return false;
 }
 
+
 // this function will be called for every token, and it should
 // expand environment variables. In other words, if the token
 // happens to start with '$', the correct substitution with the
@@ -96,7 +97,12 @@ static bool parse_environ_var(struct execcmd* c, char* arg) {
 static char* expand_environ_var(char* arg) {
 
 	if (arg[0] == '$') {
-		char *tmp = getenv(&arg[1]);
+		char * tmp;
+		if (arg[1] == '?') {
+			sprintf(tmp, "%d", status);
+		} else {
+			tmp = getenv(&arg[1]);
+		}
 		if (tmp == NULL) {
 			*arg = ' ';
 		} else {
@@ -138,7 +144,7 @@ static struct cmd* parse_exec(char* buf_cmd) {
 			continue;
 
 		tok = expand_environ_var(tok);
-		
+
 		c->argv[argc++] = tok;
 	}
 

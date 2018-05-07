@@ -73,7 +73,7 @@ void exec_cmd(struct cmd* cmd) {
 	if (c->type != PIPE && c->eargc > 0) {
 		set_environ_vars(c->eargv, c->eargc);
 	}
-	
+
 	switch (cmd->type) {
 
 		case EXEC: {
@@ -108,9 +108,13 @@ void exec_cmd(struct cmd* cmd) {
 				close(fd);
 			}
 			if (strlen(c->err_file) > 0) {
-				fd = open_redir_fd(c->err_file);
-				new_fd = dup2(fd, 2);
-				close(fd);
+				if (block_contains(c->err_file, '&') >= 0) {
+					new_fd = dup2(STDOUT_FILENO, 2);
+				} else {
+					fd = open_redir_fd(c->err_file);
+					new_fd = dup2(fd, 2);
+					close(fd);
+				}
 			}
 
 			if (new_fd == -1)
