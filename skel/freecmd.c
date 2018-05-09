@@ -13,8 +13,10 @@ void free_command(struct cmd* cmd) {
 
 		p = (struct pipecmd*)cmd;
 
-		free_command(p->leftcmd);
-		free_command(p->rightcmd);
+		int i;
+		for (i = 0; i < (int)sizeof(p->array_cmd); i++) {
+			free_command(p->array_cmd[i]);
+		}
 
 		free(p);
 		return;

@@ -29,7 +29,7 @@ struct cmd {
 	- eargc: environ vars quantity after parsed
 	- argv: array of strings representig the arguments
 		of the form: {"binary/command", "arg0", "arg1", ... , (char*)NULL}
-	- eargv: array of strings of the form: "KEY=VALUE" 
+	- eargv: array of strings of the form: "KEY=VALUE"
 		representing the environ vars
 	- *_file: string that contains the name of the file
 		to be redirected to
@@ -62,8 +62,7 @@ struct pipecmd {
 	int type;
 	pid_t pid;
 	char scmd[BUFLEN];
-	struct cmd* leftcmd;
-	struct cmd* rightcmd;
+	struct cmd** array_cmd;
 };
 
 /*

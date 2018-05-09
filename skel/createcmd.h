@@ -8,6 +8,6 @@ struct cmd* exec_cmd_create(char* cmd);
 
 struct cmd* back_cmd_create(struct cmd* c);
 
-struct cmd* pipe_cmd_create(struct cmd* l, struct cmd* r);
+struct cmd* pipe_cmd_create(struct cmd** array_cmd);
 
 #endif // CREATECMD_H
