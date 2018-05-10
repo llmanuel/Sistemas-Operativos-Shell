@@ -2,10 +2,15 @@
 
 // counts how many times the caracter token appears in the string str
 // returning the value in count
-	void count_character(const char *str, char token, size_t count) {
+	void count_character(const char *str, char token, int count) {
 	count = 0;
-  while(*str != END_STRING)
-		if (*str++ == token) ++count;
+	int i = 0;
+  while(str[i] != END_STRING) {
+		if (str[i] == token) {
+			++count;
+		}
+		i++;
+	}
 }
 
 // splits a string line in two

@@ -14,10 +14,11 @@ void free_command(struct cmd* cmd) {
 		p = (struct pipecmd*)cmd;
 
 		int i;
-		for (i = 0; i < (int)sizeof(p->array_cmd); i++) {
+		for (i = 0; i < (sizeof(p->array_cmd)/sizeof(struct cmd*)); i++) {
 			free_command(p->array_cmd[i]);
 		}
 
+		free(p->array_cmd);
 		free(p);
 		return;
 	}

@@ -193,21 +193,25 @@ static struct cmd* parse_cmd(char* buf_cmd) {
 // parses the command line
 // looking for the pipe character '|'
 struct cmd* parse_line(char* buf) {
-	size_t count = 0;
-	count_character(buf, '|', count);
+	int count = 0;
 
-	struct cmd ** array_cmd = (struct cmd**)calloc(count+1, sizeof(	struct cmd *));
-	count = 0;
-	char* right;
+	// strcat(buf,' ');
+	count_character(buf, '|', count);
+	printf("count: %d\n", count);
+	struct cmd ** array_cmd;
 	if (count == 0) {
-		array_cmd[count] = parse_cmd(buf);
+		return parse_cmd(buf);
 	} else {
-		while ((right = split_line(buf, '|')) != END_STRING) {
-			array_cmd[count] = parse_cmd(buf);
-			count++;
+		array_cmd = (struct cmd**)calloc(count+1, sizeof(	struct cmd *));
+		int i = 0;
+		char* right;
+		while (i <= count) {
+			right = split_line(buf, '|');
+			array_cmd[i] = parse_cmd(buf);
+			i++;
 			strcpy(buf, right);
 		}
-		array_cmd[count] = parse_cmd(right);
+		array_cmd[i] = parse_cmd(right);
 	}
 	printf("llegue \n");
 

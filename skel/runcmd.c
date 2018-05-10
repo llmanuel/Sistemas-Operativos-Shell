@@ -59,7 +59,7 @@ int run_cmd(char* cmd) {
 	}
 
 	print_status_info(parsed);
-
+	printf("antes de free_command\n");
 	free_command(parsed);
 
 	return 0;

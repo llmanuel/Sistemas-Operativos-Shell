@@ -63,7 +63,7 @@ static int open_redir_fd(char* file) {
 }
 
 static int there_is_another_cmd(struct cmd** array_cmd, int count) {
-	if (((int)sizeof(array_cmd) - count + 1) > 0)
+	if ((sizeof(array_cmd) - count + 1) > 0)
 		return 1;
 
 	return 0;
