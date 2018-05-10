@@ -63,6 +63,7 @@ struct pipecmd {
 	pid_t pid;
 	char scmd[BUFLEN];
 	struct cmd** array_cmd;
+	int cant_cmd;
 };
 
 /*

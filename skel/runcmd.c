@@ -37,7 +37,7 @@ int run_cmd(char* cmd) {
 		// so it can be freed later
 		if (parsed->type == PIPE)
 			parsed_pipe = parsed;
-
+			
 		exec_cmd(parsed);
 	}
 
@@ -59,7 +59,7 @@ int run_cmd(char* cmd) {
 	}
 
 	print_status_info(parsed);
-	printf("antes de free_command\n");
+
 	free_command(parsed);
 
 	return 0;

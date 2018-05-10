@@ -3,7 +3,7 @@
 
 #include "defs.h"
 
-void count_character(const char *str, char token, int count);
+int count_character(const char *str, char token);
 
 char* split_line(char* buf, char splitter);
 

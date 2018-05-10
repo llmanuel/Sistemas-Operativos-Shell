@@ -12,13 +12,6 @@ void free_command(struct cmd* cmd) {
 	if (cmd->type == PIPE) {
 
 		p = (struct pipecmd*)cmd;
-
-		int i;
-		for (i = 0; i < (sizeof(p->array_cmd)/sizeof(struct cmd*)); i++) {
-			free_command(p->array_cmd[i]);
-		}
-
-		free(p->array_cmd);
 		free(p);
 		return;
 	}
@@ -31,7 +24,7 @@ void free_command(struct cmd* cmd) {
 		free(b);
 		return;
 	}
-
+	
 	e = (struct execcmd*)cmd;
 
 	for (i = 0; i < e->argc; i++)

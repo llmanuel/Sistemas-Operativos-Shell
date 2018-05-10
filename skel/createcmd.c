@@ -30,12 +30,9 @@ struct cmd* back_cmd_create(struct cmd* c) {
 }
 
 // encapsulates two commands into one pipe struct
-struct cmd* pipe_cmd_create(struct cmd** array_cmd) {
-	printf("sizeof(array_cmd): %ld\n", (sizeof(array_cmd)/sizeof(struct cmd)));
-	printf("command %s\n", array_cmd[0]->scmd);
-	printf("type EXEC 1 | BACK 2| REDIR 3|PIPE 4: %d\n", array_cmd[0]->type);
+struct cmd* pipe_cmd_create(struct cmd** array_cmd, int cant_cmd) {
 
-	if ((sizeof(array_cmd)/sizeof(struct cmd)) == 1) {
+	if (cant_cmd == 1) {
 		struct cmd* c = array_cmd[0];
 		free(array_cmd);
 		return c;
@@ -47,6 +44,7 @@ struct cmd* pipe_cmd_create(struct cmd** array_cmd) {
 
 	p->type = PIPE;
 	p->array_cmd = array_cmd;
+	p->cant_cmd = cant_cmd;
 
 	return (struct cmd*)p;
 }

@@ -62,8 +62,8 @@ static int open_redir_fd(char* file) {
 	return open(file, O_CREAT | O_APPEND | O_WRONLY, 0664);
 }
 
-static int there_is_another_cmd(struct cmd** array_cmd, int count) {
-	if ((sizeof(array_cmd) - count + 1) > 0)
+static int there_is_another_cmd(int cant_cmd, int count) {
+	if ((cant_cmd - count) > 0)
 		return 1;
 
 	return 0;
@@ -165,18 +165,18 @@ void exec_cmd(struct cmd* cmd) {
 			}
 
 			int i;
-			for (i = 1; i < (int)sizeof(cmd_p->array_cmd); i++) {
+			for (i = 1; i < cmd_p->cant_cmd; i++) {
 
 				if (fork() == 0) {
 					read_pipe_and_close(pipefd);
 
-					if (there_is_another_cmd(cmd_p->array_cmd, i + 1)) {
+					if (there_is_another_cmd(cmd_p->cant_cmd, i + 1)) {
 						if (pipe(pipefd) == -1)
 							perror("Error: ");
 						write_pipe_and_close(pipefd);
 					}
 
-					exec_cmd(cmd_p->array_cmd[i+1]);
+					exec_cmd(cmd_p->array_cmd[i]);
 				}
 
 			}
@@ -184,11 +184,13 @@ void exec_cmd(struct cmd* cmd) {
 			close(pipefd[READ_END]);
 			close(pipefd[WRITE_END]);
 
-			wait(NULL);
-			wait(NULL);
+			for (i = 0; i <= cmd_p->cant_cmd; i++) {
+				wait(NULL);
+			}
+
 			// // free the memory allocated
 			// // for the pipe tree structure
-			free_command(parsed_pipe);
+				// free_command(parsed_pipe);
 
 			break;
 		}
