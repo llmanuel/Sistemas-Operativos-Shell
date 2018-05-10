@@ -64,41 +64,37 @@ static int open_redir_fd(char* file) {
 
 void execute_pipe(struct cmd* cmd) {
 	int pipefd[2];
-	pid_t p_left, p_right;
+	pid_t p_left;
 	int status = 0;
 	struct pipecmd* cmd_p = (struct pipecmd*)cmd;
 	if (pipe(pipefd) == -1)
 		perror("Error: ");
 
 	if ((p_left = fork()) == 0) {
-		if (dup2(pipefd[WRITE_END], STDOUT_FILENO) == -1) {
+		if (dup2(pipefd[WRITE_END], STDOUT_FILENO) < 0) {
 			perror("Error: ");
 		}
-		close(pipefd[READ_END]);
-		close(pipefd[WRITE_END]);
 
 		exec_cmd(cmd_p->leftcmd);
-	}
-
-	if ((p_right = fork()) == 0) {
-		if (dup2(pipefd[READ_END], STDIN_FILENO) == -1) {
+	} else {
+		waitpid(p_left, &status, 0);
+		if (dup2(pipefd[READ_END], STDIN_FILENO) < 0) {
 			perror("Error: ");
 		}
-		close(pipefd[READ_END]);
-		close(pipefd[WRITE_END]);
-
-		exec_cmd(cmd_p->rightcmd);
+		char * rightcmd;
+		if ((rightcmd = strstr(cmd_p->rightcmd->scmd, "|")) != NULL) {
+			struct cmd* next_cmd = parse_line(rightcmd);
+      execute_pipe(next_cmd);
+    } else {
+			// close(pipefd[READ_END]);
+			close(pipefd[WRITE_END]);
+		  exec_cmd(cmd_p->rightcmd);
+    }
 	}
 
-	close(pipefd[READ_END]);
-	close(pipefd[WRITE_END]);
-
-	waitpid(p_left, &status, 0);
-	waitpid(p_right, &status, 0);
-	// // free the memory allocated
-	// // for the pipe tree structure
-	// free_command(parsed_pipe);
+	free_command(parsed_pipe);
 }
+
 
 // executes a command - does not return
 //
