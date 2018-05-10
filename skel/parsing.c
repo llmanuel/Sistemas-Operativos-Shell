@@ -199,12 +199,17 @@ struct cmd* parse_line(char* buf) {
 	struct cmd ** array_cmd = (struct cmd**)calloc(count+1, sizeof(	struct cmd *));
 	count = 0;
 	char* right;
-	while ((right = split_line(buf, '|')) != END_STRING) {
+	if (count == 0) {
 		array_cmd[count] = parse_cmd(buf);
-		array_cmd[++count] = parse_cmd(right);
-		count++;
-		strcpy(buf, right);
+	} else {
+		while ((right = split_line(buf, '|')) != END_STRING) {
+			array_cmd[count] = parse_cmd(buf);
+			count++;
+			strcpy(buf, right);
+		}
+		array_cmd[count] = parse_cmd(right);
 	}
+	printf("llegue \n");
 
 	return pipe_cmd_create(array_cmd);
 }

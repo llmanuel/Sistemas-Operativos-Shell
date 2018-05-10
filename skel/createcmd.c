@@ -31,6 +31,7 @@ struct cmd* back_cmd_create(struct cmd* c) {
 
 // encapsulates two commands into one pipe struct
 struct cmd* pipe_cmd_create(struct cmd** array_cmd) {
+	printf("(int)sizeof(array_cmd): %s\n", (int)sizeof(array_cmd));
 
 	if ((int)sizeof(array_cmd) == 1)
 		return array_cmd[0];
