@@ -39,8 +39,6 @@ int run_cmd(char* cmd) {
 		if (parsed->type == PIPE)
 			parsed_pipe = parsed;
 
-		printf("getpid(): %d\n",(int) getpid());
-
 		exec_cmd(parsed);
 	}
 
@@ -55,7 +53,7 @@ int run_cmd(char* cmd) {
 	// 	'print_back_info()'
 
 	if (parsed->type == BACK) {
-		execBackground(parsed, p);
+		set_background_variables(parsed, p);
 		// print_back_info(parsed);
 	} else {
 		// waits for the process to finish
