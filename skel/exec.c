@@ -176,7 +176,6 @@ void exec_cmd(struct cmd* cmd) {
 
 			int i = 1;
 			if (cmd_p->cant_cmd > 2) {
-				printf("paso\n");
 				// loop middle pipes
 				for (i = 1; i < cmd_p->cant_cmd - 1; i++) {
 					pid_t next;
