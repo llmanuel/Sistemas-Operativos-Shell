@@ -8,9 +8,8 @@ void free_command(struct cmd* cmd) {
 	struct pipecmd* p;
 	struct execcmd* e;
 	struct backcmd* b;
-printf("free\n" );
+	
 	if (cmd->type == PIPE) {
-printf("free pipe\n" );
 		p = (struct pipecmd*)cmd;
 		free(p);
 		return;

@@ -70,19 +70,21 @@ static int there_is_another_cmd(int cant_cmd, int count) {
 }
 
 static void write_pipe_and_close(int* pipefd) {
-		close(pipefd[READ_END]);
+
 	if (dup2(pipefd[WRITE_END], STDOUT_FILENO) == -1) {
 		perror("Error: ");
 	}
-	// close(pipefd[WRITE_END]);
+	close(pipefd[WRITE_END]);
+	close(pipefd[READ_END]);
 }
 
 static void read_pipe_and_close(int* pipefd) {
-		close(pipefd[WRITE_END]);
+
 	if (dup2(pipefd[READ_END], STDIN_FILENO) == -1) {
 		perror("Error: ");
 	}
-	// close(pipefd[READ_END]);
+	close(pipefd[READ_END]);
+	close(pipefd[WRITE_END]);
 
 }
 
@@ -158,21 +160,15 @@ void exec_cmd(struct cmd* cmd) {
 		case PIPE: {
 			// pipes two commands
 			struct pipecmd* cmd_p = (struct pipecmd*)cmd;
-			printf("llegue\n");
 
-			int pipefd[2];
+			int * pipefd = (int*)calloc((cmd_p->cant_cmd-1)*2,sizeof(int));
 			if (pipe(pipefd) == -1) {
 				perror("Error creation of first pipe: ");
 			}
-			// printf("size of pipefd: %d\n",cmd_p->cant_cmd - 1 );
 
 			pid_t first;
 			if ((first=fork()) == 0) {
-				if (dup2(pipefd[WRITE_END], STDOUT_FILENO) == -1) {
-					perror("Error: ");
-				}
-				close(pipefd[READ_END]);
-				close(pipefd[WRITE_END]);
+				write_pipe_and_close(pipefd );
 
 				exec_cmd(cmd_p->array_cmd[0]);
 			}
@@ -181,7 +177,7 @@ void exec_cmd(struct cmd* cmd) {
 			int i = 1;
 			if (cmd_p->cant_cmd > 2) {
 				printf("paso\n");
-				// loop hasta el antiultimo
+				// loop middle pipes
 				for (i = 1; i < cmd_p->cant_cmd - 1; i++) {
 					pid_t next;
 					if (pipe(pipefd + (2*i)) == -1) {
@@ -192,8 +188,10 @@ void exec_cmd(struct cmd* cmd) {
 
 
 						write_pipe_and_close(pipefd + (2*i));
-						exec_cmd(cmd_p->array_cmd[0]);
+						exec_cmd(cmd_p->array_cmd[i]);
 					}
+					close(pipefd[(2*(i-1)) + READ_END]);
+					close(pipefd[(2*(i-1)) + WRITE_END]);
 					waitpid(next, 0, 0);
 				}
 			}
@@ -201,52 +199,13 @@ void exec_cmd(struct cmd* cmd) {
 			// last
 			pid_t last;
 			if ((last=fork()) == 0) {
-				printf("last i value is: %d\n",i );
-				printf("last READ_END + (2*(i-1)) value is: %d\n",READ_END + (2*(i-1)));
-				if (dup2(pipefd[READ_END + (2*(i-1))], STDIN_FILENO) == -1) {
-					perror("Error: ");
-				}
-				close(pipefd[READ_END + (2*(i-1))]);
-				close(pipefd[WRITE_END + (2*(i-1))]);
+				read_pipe_and_close(pipefd + (2*(i-1)));
 
-				exec_cmd(cmd_p->array_cmd[0]);
+				exec_cmd(cmd_p->array_cmd[i]);
 			}
+			close(pipefd[(2*(i-1)) + READ_END]);
+			close(pipefd[(2*(i-1)) + WRITE_END]);
 			waitpid(last, 0, 0);
-
-			for (i = 0; i < cmd_p->cant_cmd - 1; ++i) {
-				close(pipefd[i]);
-			}
-
-
-			// int i;
-			// for (i = 1; i < cmd_p->cant_cmd - 1; i++) {
-			// 	pid_t next;
-			//
-			// 	if (there_is_another_cmd(cmd_p->cant_cmd, i + 1)) {
-			//
-			// 		printf("i'm in for %d time\n", i);
-			// 		if (pipe(pipefd ) == -1) {
-			// 			printf("Error with the creation of the %d pipe: ", i);
-			// 			perror("Warning");
-			// 		}
-			// 	if ((next = fork()) == 0) {
-			// 			write_pipe_and_close(pipefd );
-			// 			exec_cmd(cmd_p->array_cmd[i]);
-			// 		}
-			// 	}
-			//
-			// 	waitpid(next, 0, 0);
-			//
-			// }
-			//
-			// close(pipefd[READ_END]);
-			// close(pipefd[WRITE_END]);
-
-			// for (i = 0; i <= cmd_p->cant_cmd; i++) {
-			// 	wait(NULL);
-			// }
-
-			printf("llegue 3\n");
 
 			// // free the memory allocated
 			// // for the pipe tree structure
