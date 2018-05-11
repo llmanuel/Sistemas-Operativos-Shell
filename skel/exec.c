@@ -62,13 +62,6 @@ static int open_redir_fd(char* file) {
 	return open(file, O_CREAT | O_APPEND | O_WRONLY, 0664);
 }
 
-static int there_is_another_cmd(int cant_cmd, int count) {
-	if ((cant_cmd - count) > 0)
-		return 1;
-
-	return 0;
-}
-
 static void write_pipe_and_close(int* pipefd) {
 
 	if (dup2(pipefd[WRITE_END], STDOUT_FILENO) == -1) {
@@ -85,10 +78,6 @@ static void read_pipe_and_close(int* pipefd) {
 	}
 	close(pipefd[READ_END]);
 	close(pipefd[WRITE_END]);
-
-}
-
-static void process_middle_pipes(int* pipefd_in, int* out) {
 
 }
 

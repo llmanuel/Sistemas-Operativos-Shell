@@ -2,6 +2,7 @@
 #include "types.h"
 #include "readline.h"
 #include "runcmd.h"
+#include "utils.h"
 
 char promt[PRMTLEN] = {0};
 
@@ -31,6 +32,7 @@ static void init_shell() {
 }
 
 int main(void) {
+  change_sgichld_signal();
 
 	init_shell();
 

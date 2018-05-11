@@ -1,4 +1,5 @@
 #include "runcmd.h"
+#include "backgroundutils.h"
 
 int status = 0;
 struct cmd* parsed_pipe;
@@ -37,7 +38,9 @@ int run_cmd(char* cmd) {
 		// so it can be freed later
 		if (parsed->type == PIPE)
 			parsed_pipe = parsed;
-			
+
+		printf("getpid(): %d\n",(int) getpid());
+
 		exec_cmd(parsed);
 	}
 
@@ -52,7 +55,8 @@ int run_cmd(char* cmd) {
 	// 	'print_back_info()'
 
 	if (parsed->type == BACK) {
-		print_back_info(parsed);
+		execBackground(parsed, p);
+		// print_back_info(parsed);
 	} else {
 		// waits for the process to finish
 		waitpid(p, &status, 0);

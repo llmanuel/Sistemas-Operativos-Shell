@@ -7,6 +7,7 @@
 #include "printstatus.h"
 #include "freecmd.h"
 #include "builtin.h"
+#include "backgroundutils.h"
 
 int run_cmd(char* cmd);
 
